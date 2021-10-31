@@ -34,6 +34,9 @@ if __name__ == '__main__':
     smu.source_current()
     smu.measure_voltage()
 
+    # Enable 4-wire measurements
+    smu.remote_sense_on();
+
     # Initially set to not drain and turn on output
     smu.set_source_current(0)
     smu.output_on()

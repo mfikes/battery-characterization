@@ -45,6 +45,9 @@ class Keithley_2400():
 
     def measure_voltage(self):
         self.__command(":system:key 15")
+
+    def remote_sense_on(self):
+        self.__command(":system:rsense on")
         
     def __del__(self):
         self.output_off()
