@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     port = '/dev/cu.usbserial-PXEFMYB9'
     
-    smu = Keithley_2400(Prologix(port,True))
+    smu = Keithley_2400(Prologix(port,False))
 
     # Set high impedance off state so battery can't drive SMU
     smu.set_off_state_high_impedance()
