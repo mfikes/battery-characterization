@@ -31,7 +31,8 @@ if __name__ == '__main__':
     addr = 26
     
     gpib = prologix.Prologix(port)
-    smu = Keith
+    smu = keithley_2400.Keithley_2400(gpib,addr)
+    
     setup_instrument(gpib, addr)
     
     # Set high impedance off state so battery can't drive SMU
@@ -45,6 +46,8 @@ if __name__ == '__main__':
     # Initially set to not drain and turn on output
     gpib.command(addr, ":source:current 0")
     gpib.command(addr, ":output:state on")
+
+    smu.output_on()
 
     voc_esr_table = []
     
