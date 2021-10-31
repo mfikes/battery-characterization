@@ -18,9 +18,9 @@ if __name__ == '__main__':
     # Main parameters
     drain_current = 0.002
     cutoff_voltage = 1.0
-    measurement_interval = 10
-    recovery_interval = 2
-    load_interval = 0.1
+    measurement_interval = 5
+    recovery_interval = 0.4
+    load_interval = 0.4
     discharge_model_filename = 'foo.csv'
 
     port = '/dev/cu.usbserial-PXEFMYB9'
