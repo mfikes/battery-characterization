@@ -1,15 +1,6 @@
-import prologix
+from prologix import Prologix
+from keithley_2400 import Keithley_2400
 import time
-
-def setup_instrument(gpib, addr):
-    gpib.command(addr, "*rst")
-    print(gpib.query(addr, "*idn?"))
-
-def read_voltage(gpib, addr):
-    s = gpib.query(addr, ":read?")
-    vals = s.split(",")
-    voltage = float(vals[0])
-    return voltage
 
 def calculate_esr(voltage, voc, current):
     return (voc - voltage) / current
@@ -27,37 +18,34 @@ if __name__ == '__main__':
     recovery_interval = 2
 
     port = '/dev/cu.usbserial-PXEFMYB9'
-    addr = 26
     
-    gpib = prologix.Prologix(port)
-    setup_instrument(gpib, addr)
-    
-    # Set high impedance off state so battery can't drive SMU
-    gpib.command(addr, ":output:smode himp")
+    smu = Keithley_2400(Prologix(port,True))
 
+    # Set high impedance off state so battery can't drive SMU
+    smu.set_off_state_high_impedance()
+    
     # Source current, measure voltage
-    # TODO Do this via commands rather than simulated key presses
-    gpib.command(addr, ":system:key 19")
-    gpib.command(addr, ":system:key 15")
+    smu.source_current()
+    smu.measure_voltage()
 
     # Initially set to not drain and turn on output
-    gpib.command(addr, ":source:current 0")
-    gpib.command(addr, ":output:state on")
-
+    smu.set_source_current(0)
+    smu.output_on()
+    
     voc_esr_table = []
     
     done = False
     while not(done):
         
         # Drain the battery for the measurement interval
-        gpib.command(addr, ":source:current -" + str(drain_current))
+        smu.set_source_current(drain_current)
         time.sleep(measurement_interval)
-        voltage = read_voltage(gpib, addr)
+        voltage = smu.read_voltage()
         
         # Measure open circuit voltage
-        gpib.command(addr, ":source:current 0")
+        smu.set_source_current(0)
         time.sleep(recovery_interval);
-        voc = read_voltage(gpib, addr);
+        voc = smu.read_voltage();
 
         esr = calculate_esr(voltage, voc, drain_current);
 
@@ -66,9 +54,6 @@ if __name__ == '__main__':
         
         if voltage < cutoff_voltage:
             done = True
-
-    # Now shut off instrument and close comm
-    gpib.command(addr, ":output:state off")
 
     print("Cutoff voltage reached. Dumping battery charge model CSV.\n")
     
