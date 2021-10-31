@@ -57,7 +57,7 @@ if __name__ == '__main__':
         voc_esr_table.append([voc, esr])
 
         # Indicate progress
-        print("{:.5f} V   {:.5f} V   {:.5f} Ω".format(voc, voltage, esr))
+        print("{:.4f} V   {:.4f} V   {:.4f} Ω".format(voc, voltage, esr))
 
         # Bookkeeping
         if voltage < cutoff_voltage:
