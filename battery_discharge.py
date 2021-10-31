@@ -10,7 +10,7 @@ def lookup_voc_esr(soc, voc_esr_table):
     index = round((len(voc_esr_table)-1)*(100-soc)/100)
     return voc_esr_table[index]
 
-def create_dischage_model(voc_esr_table):
+def create_discharge_model(voc_esr_table):
     return lambda soc : lookup_voc_esr(soc, voc_esr_table)
 
 if __name__ == '__main__':
@@ -20,6 +20,7 @@ if __name__ == '__main__':
     cutoff_voltage = 1.0
     measurement_interval = 10
     recovery_interval = 2
+    discharge_model_filename = 'foo.csv'
 
     port = '/dev/cu.usbserial-PXEFMYB9'
     
@@ -59,8 +60,8 @@ if __name__ == '__main__':
         if voltage < cutoff_voltage:
             done = True
 
-    print("Cutoff voltage reached. Dumping battery charge model CSV.\n")
+    print("Writing battery charge model to " + discharge_model_filename)
     
     # Dump the battery charge model
-    discharge_model.write('foo.csv', create_discharge_model(voc_esr_table))
+    discharge_model.write(discharge_model_filename, create_discharge_model(voc_esr_table))
 
