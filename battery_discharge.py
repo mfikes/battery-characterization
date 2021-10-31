@@ -21,7 +21,7 @@ if __name__ == '__main__':
     measurement_interval = 5
     recovery_interval = 0.4
     load_interval = 0.4
-    discharge_model_filename = 'foo.csv'
+    discharge_model_filename = 'discharge_model.csv'
 
     port = '/dev/cu.usbserial-PXEFMYB9'
     
