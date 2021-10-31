@@ -3,14 +3,6 @@ import sys
 import time
 from enum import Enum
 
-class OutputState(Enum):
-    OFF = "off"
-    ON = "on"
-    
-class OffState(Enum):
-    NORMAL = "normal"
-    HIGH_IMPEDANCE = "himp"
-
 class Keithley_2400():
     addr = None
     gpib = None
@@ -36,14 +28,17 @@ class Keithley_2400():
         voltage = float(vals[0])
         return voltage
 
-    def set_off_state(self, off_state):
-        self.__command(":output:smode " + off_state.value)
+    def set_off_state_high_impedance(self):
+        self.__command(":output:smode himp")
 
     def set_source_current(self, amps):
         self.__command(":source:current " + str(amps))
 
-    def set_output_state(self, output_state):
-        self.__command(":output:state " + output_state.value)
+    def output_on(self):
+        self.__command(":output:state on")
+
+    def output_off(self):
+        self.__command(":output:state off")
 
     def source_current(self):
         self.__command(":system:key 19")
@@ -52,4 +47,4 @@ class Keithley_2400():
         self.__command(":system:key 15")
         
     def __del__(self):
-        self.set_output_state(OutputState.OFF)
+        self.output_off()

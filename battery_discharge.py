@@ -1,5 +1,5 @@
 from prologix import Prologix
-from keithley_2400 import Keithley_2400, OutputState, OffState
+from keithley_2400 import Keithley_2400
 import time
 
 def calculate_esr(voltage, voc, current):
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     smu = Keithley_2400(Prologix(port,True))
 
     # Set high impedance off state so battery can't drive SMU
-    smu.set_off_state(OffState.HIGH_IMPEDANCE)
+    smu.set_off_state_high_impedance()
     
     # Source current, measure voltage
     smu.source_current()
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     # Initially set to not drain and turn on output
     smu.set_source_current(0)
-    smu.set_output_state(OutputState.ON);
+    smu.output_on()
     
     voc_esr_table = []
     
