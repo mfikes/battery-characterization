@@ -2,10 +2,8 @@ import prologix
 import time
 
 def setup_instrument(gpib, addr):
-    print("query")
     gpib.command(addr, "*rst")
     print(gpib.query(addr, "*idn?"))
-    print("query done")
 
 def read_voltage(gpib, addr):
     s = gpib.query(addr, ":read?")
@@ -31,10 +29,8 @@ if __name__ == '__main__':
     port = '/dev/cu.usbserial-PXEFMYB9'
     addr = 26
     
-    gpib = prologix.Prologix(port)
+    gpib = prologix.Prologix(port,True)
     setup_instrument(gpib, addr)
-    time.sleep(1);
-    1/0
     
     # Set high impedance off state so battery can't drive SMU
     gpib.command(addr, ":output:smode himp")
