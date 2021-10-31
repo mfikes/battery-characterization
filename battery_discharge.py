@@ -16,6 +16,7 @@ if __name__ == '__main__':
     cutoff_voltage = 1.0
     measurement_interval = 10
     recovery_interval = 2
+    load_interval = 0.1
 
     port = '/dev/cu.usbserial-PXEFMYB9'
     
@@ -34,26 +35,32 @@ if __name__ == '__main__':
     
     voc_esr_table = []
     
-    done = False
-    while not(done):
-        
-        # Drain the battery for the measurement interval
-        smu.set_source_current(drain_current)
-        time.sleep(measurement_interval)
-        voltage = smu.read_voltage()
-        
+    while True:
+
         # Measure open circuit voltage
         smu.set_source_current(0)
         time.sleep(recovery_interval);
         voc = smu.read_voltage();
 
-        esr = calculate_esr(voltage, voc, drain_current);
+        # Apply load and measure voltage
+        smu.set_source_current(-drain_current)
+        time.sleep(load_interval)
+        voltage = smu.read_voltage()
 
-        print("{:.5f} V   {:.5f} V   {:.5f} Ω".format(voc, voltage, esr))
+        # Calculate ESR and capture results
+        esr = calculate_esr(voltage, voc, drain_current);
         voc_esr_table.append([voc, esr])
-        
+
+        # Indicate progress
+        print("{:.5f} V   {:.5f} V   {:.5f} Ω".format(voc, voltage, esr))
+
+        # Bookkeeping
         if voltage < cutoff_voltage:
-            done = True
+            break
+        
+        # With load applied, sleep for measurement interval
+        time.sleep(measurement_interval)
+
 
     print("Cutoff voltage reached. Dumping battery charge model CSV.\n")
     
