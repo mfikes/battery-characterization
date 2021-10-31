@@ -29,7 +29,7 @@ if __name__ == '__main__':
     port = '/dev/cu.usbserial-PXEFMYB9'
     addr = 26
     
-    gpib = prologix.Prologix(port,True)
+    gpib = prologix.Prologix(port)
     setup_instrument(gpib, addr)
     
     # Set high impedance off state so battery can't drive SMU
