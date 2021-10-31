@@ -1,4 +1,5 @@
 import prologix
+import keithley_2400
 import time
 
 def setup_instrument(gpib, addr):
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     addr = 26
     
     gpib = prologix.Prologix(port)
+    smu = Keith
     setup_instrument(gpib, addr)
     
     # Set high impedance off state so battery can't drive SMU
