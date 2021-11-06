@@ -19,8 +19,7 @@ if __name__ == '__main__':
     drain_current = 0.002
     cutoff_voltage = 1.0
     measurement_interval = 5
-    recovery_interval = 0.4
-    load_interval = 0.4
+    settle_time = 0.01
     discharge_model_filename = 'discharge_model.csv'
 
     port = '/dev/cu.usbserial-PXEFMYB9'
@@ -47,12 +46,12 @@ if __name__ == '__main__':
 
         # Measure open circuit voltage
         smu.set_source_current(0)
-        time.sleep(recovery_interval);
+        time.sleep(settle_time);
         voc = smu.read_voltage();
 
         # Apply load and measure voltage
         smu.set_source_current(-drain_current)
-        time.sleep(load_interval)
+        time.sleep(settle_time)
         voltage = smu.read_voltage()
 
         # Calculate ESR and capture results
