@@ -30,8 +30,10 @@ def lookup_voc_esr(soc, voc_esr_table):
     index = round((len(voc_esr_table) - 1) * (100 - soc) / 100)
     return voc_esr_table[index]
 
+
 def create_discharge_model(voc_esr_table):
     return lambda soc: lookup_voc_esr(soc, voc_esr_table)
+
 
 def setup_instrument():
     if smu is not None:
@@ -45,33 +47,39 @@ def setup_instrument():
         smu.compliance_voltage = 21
         smu.voltage_range = 5
     else:
-        a = 1
+        dc_load.mode = "CC"
+        dc_load.cc_mode_current = 0
+        dc_load.remote_sensing_enabled = False
+
 
 def set_instrument_enabled(enabled):
     if smu is not None:
         smu.source_enabled = enabled
     else:
-        a = 1
+        dc_load.input_enabled = enabled
+
 
 def set_drain_current(drain_current):
     if smu is not None:
-        smu.source_current = -drain_current;
+        smu.source_current = -drain_current
     else:
-        a = 1
+        dc_load.cc_mode_current = drain_current
+
 
 def measure_voltage():
     if smu is not None:
         return smu.voltage
     else:
-        return 0
+        return dc_load.input_voltage
+
 
 if __name__ == '__main__':
 
     # Main parameters
-    drain_current = 0.0001
+    drain_current = 0.001
     cutoff_voltage = 1.0
     measurement_interval = 5
-    settle_time = 0.01
+    settle_time = 0.1
     discharge_model_filename = 'discharge_model.csv'
 
     setup_instrument()
